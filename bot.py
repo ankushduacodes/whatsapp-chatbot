@@ -13,8 +13,8 @@ class Bot():
     def __init__(self, json):
         self.json = json
         self.dict_messages = self.json['messages']
-        self.APIUrl = 'https://eu183.chat-api.com/instance174667/'
-        self.token = 'l0cb847bpqm0y26n'
+        self.APIUrl = os.getenv('APIUrl')
+        self.token = os.getenv('token')
         # self.token = ''
 
     def send_requests(self, method, data):
