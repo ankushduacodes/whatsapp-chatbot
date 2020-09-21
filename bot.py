@@ -3,6 +3,7 @@ import os
 import requests
 import datetime
 import csv
+import re
 
 import random
 import string
@@ -12,15 +13,14 @@ class Bot():
     def __init__(self, json):
         self.json = json
         self.dict_messages = self.json['messages']
-        self.APIUrl = 'https://eu153.chat-api.com/instance172822/'
-        self.token = 'zlcb2ftnh2olnzk6'
+        self.APIUrl = 'https://eu183.chat-api.com/instance174667/'
+        self.token = 'l0cb847bpqm0y26n'
         # self.token = ''
 
     def send_requests(self, method, data):
         url = f"{self.APIUrl}{method}?token={self.token}"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, data=json.dumps(data), headers=headers)
-        print(response.json())
         return response.json()
 
     def send_message(self, chatID, text):
@@ -41,7 +41,7 @@ class Bot():
         path = '/home/ankushduacodes/pythonanywhere/orders/'+chatID+'_ongoing.json'
         with open(path, mode='r') as f:
             user = json.load(f)
-        text = f"""Restaurant's Name = *{user.get('rstrnt_choice')}*\nDate of Booking = *{user.get('date_of_booking')}*\nTime of arrival = *{user.get('eta')}*\nReservation is for *{user.get('ppl_count')}*\nYour Details are:\n{user.get('full_name_and_enter_phn_number')}\n\nWould you like to continue with your reservation?\n\nPlease reply with Yes or No"""
+        text = f"""Restaurant's Name = *{user.get('rstrnt_choice')}*\nDate of Booking = *{user.get('date_of_booking')}*\nTime of arrival = *{user.get('eta')}*\nReservation is for *{user.get('ppl_count')}*\nYour Details are:\n{user.get('full_name_and_enter_phn_number')[0]}\n{user.get('full_name_and_enter_phn_number')[1]}\n\nWould you like to continue with your reservation?\n\nPlease reply with Yes or No"""
         if string:
             text = string + text
         return self.send_message(chatID, text)
@@ -83,11 +83,15 @@ class Bot():
                         with open(path, mode='r+') as f:
                             state_dict = json.load(f)
                         state = state_dict.get('state')
+                        if text.lower() == 'cancel':
+                            os.remove(path)
+                            return self.send_goodbye(id)
 
                         # Welcome message validation
                         if state == 'wlcm_msg':
                             if text.lower() not in ['yes', 'no']:
-                                err_msg = "Please reply with Yes or No\n\n" + question_dict[keys[1]]
+                                err_msg = "Please reply with Yes or No\n\n" + \
+                                    question_dict[keys[1]]
                                 return self.send_message(id, err_msg)
                             elif text.lower() == 'no':
                                 os.remove(path)
@@ -102,13 +106,54 @@ class Bot():
                                     if text.lower() == 'yes':
                                         random_str = get_random_string(8)
                                         os.rename(path, path.replace(
-                                            'ongoing.json', 'completed'+ random_str +'.json'))
+                                            'ongoing.json', 'completed_' + random_str + '.json'))
                                         return self.send_confirmation(id)
                                     elif text.lower() == 'no':
                                         os.remove(path)
                                         return self.send_goodbye(id)
                                 else:
                                     return self.confirm_reservation(id, "Please respond by *Yes* or *No*\n\n")
+
+                        # Validation on date format
+                        if state == 'date_of_booking':
+                            text = text.split('-')
+                            try:
+                                if len(text) != 3 or int(text[0]) > 30 or int(text[0]) < 1 or int(text[1]) > 12 or int(text[1]) < 1 or int(text[2]) < 2020:
+                                    raise ValueError
+                            except:
+                                err_msg = 'Please enter a Valid date in the given format\n\n' + \
+                                    question_dict[keys[index_of_key]]
+                                return self.send_message(id, err_msg)
+                            finally:
+                                text = '-'.join(text)
+
+                        # Validation on time format
+                        if state == 'eta':
+                            try:
+                                text = text.split(':')
+                                print(text)
+                                if len(text) != 2 or int(text[0]) < 4 or int(text[0]) > 10 or int(text[1]) < 0 or int(text[1]) > 59:
+                                    raise ValueError
+                            except:
+                                err_msg = 'Please enter a Valid time in the given format\n\n' + \
+                                    question_dict[keys[index_of_key]]
+                                return self.send_message(id, err_msg)
+                            finally:
+                                text = ':'.join(text)
+
+                        # Validation on phone Number and Name
+                        if state == 'full_name_and_enter_phn_number':
+                            try:
+                                text = text.split('\n')
+                                int(text[1])
+                            except ValueError:
+                                err_msg = 'Entered phone number was not valid, Please enter Your Full Name and Valid Phone number in the given format.\n\n' + \
+                                    question_dict[keys[index_of_key]]
+                                return self.send_message(id, err_msg)
+                            except:
+                                err_msg = 'Please enter your Full Name Valid Phone number in the given format.\n\n' + \
+                                    question_dict[keys[index_of_key]]
+                                return self.send_message(id, err_msg)
 
                         # Validation for people count
                         if state == 'ppl_count':
@@ -160,4 +205,3 @@ def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
-
