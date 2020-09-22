@@ -1,7 +1,7 @@
 Question Identifier, Question
-wlcm_msg, Welcome to bookrestaurant.com \nDo you want to reserve a seat at our verified restaurants\n\nPlease reply with *Yes* or *No*?
+wlcm_msg, Welcome to bookrestaurant.com \nDo you want to reserve a seat at our verified restaurants\n\nPlease reply with *Yes* or *No*\n\nSend CANCEL at any moment during the conversation to discard the reservation?
 rstrnt_choice, Please choose one of the following restaurants:\n1 Geneva Palace\n2 Gopal Restaurant\n3 Haveli\n\nTo Select the restaurant\n*Please reply with restaurant number either 1 or 2 or 3*
-date_of_booking, Please enter the of reservation date\n\n*Please enter the date in following format*\n[Day]-[Month]-[Year]\nFor Example: *12-09-2020*
-eta, Your selected restaurant is open from 4.00pm to 11.00pm seven days of the week.\n*At what time will you be arriving at the restaurant?*\n\nPlease enter time in the following format:\n[Hour]:[Minute]\nFor example:4:15
+date_of_booking, Your selected restaurant is open from 4.00pm to 11.00pm seven days of the week.\n*Except for 29th 30th and 31st of every applicable month*\n\nPlease enter the of reservation date\n\n*Please enter the date in following format*\n[Day]-[Month]-[Year]\nFor Example: *12-09-2020*
+eta, Your selected restaurant is open from 4:00pm to 10:59pm seven days of the week.\n*Except for 29th 30th and 31st of every applicable month*\n\n*At what time will you be arriving at the restaurant?*\n\nPlease enter time in the following format:\n[Hour]:[Minute]\nFor example:4:15
 ppl_count, Your selected restaurant has tables for maximum of 10 people.\n\n*How many people do you want to reserve tables for?*\n(Please enter a number between 1 or 10)
-full_name_and_enter_phn_number, Please enter your full name and phone number of 10 digits in the given format of:\n_[Your full name]_\n_[Your 10 digit Phone number]_
+full_name_and_enter_phn_number, Please enter your full name and phone number of 10 digits in the given format of:\n\n_[Your full name]_\n_[Your 10 digit Phone number]_
