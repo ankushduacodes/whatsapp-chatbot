@@ -118,7 +118,7 @@ class Bot():
                         if state == 'date_of_booking':
                             text = text.split('-')
                             try:
-                                if len(text) != 3 or int(text[0]) > 30 or int(text[0]) < 1 or int(text[1]) > 12 or int(text[1]) < 1 or int(text[2]) < 2020:
+                                if len(text) != 3 or int(text[0]) > 28 or int(text[0]) < 1 or int(text[1]) > 12 or int(text[1]) < 1 or int(text[2]) < 2020:
                                     raise ValueError
                             except:
                                 err_msg = 'Please enter a Valid date in the given format\n\n' + \
