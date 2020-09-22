@@ -41,7 +41,7 @@ class Bot():
         path = '/home/ankushduacodes/pythonanywhere/orders/'+chatID+'_ongoing.json'
         with open(path, mode='r') as f:
             user = json.load(f)
-        text = f"""Restaurant's Name = *{user.get('rstrnt_choice')}*\nDate of Booking = *{user.get('date_of_booking')}*\nTime of arrival = *{user.get('eta')}*\nReservation is for *{user.get('ppl_count')}*\nYour Details are:\n*{user.get('full_name_and_enter_phn_number')[0]}\n{user.get('full_name_and_enter_phn_number')[1]}*\n\nWould you like to continue with your reservation?\n\nPlease reply with Yes or No"""
+        text = f"""Restaurant's Name = *{user.get('rstrnt_choice')}*\nDate of Booking = *{user.get('date_of_booking')}*\nTime of arrival = *{user.get('eta')}*\nReservation is for *{user.get('ppl_count')}*\nYour Details are:\n*{user.get('full_name_and_enter_phn_number')[0]}*\n*{user.get('full_name_and_enter_phn_number')[1]}*\n\nWould you like to continue with your reservation?\n\nPlease reply with Yes or No"""
         if string:
             text = string + text
         return self.send_message(chatID, text)
