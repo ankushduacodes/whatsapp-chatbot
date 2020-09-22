@@ -41,7 +41,7 @@ class Bot():
         path = '/home/ankushduacodes/pythonanywhere/orders/'+chatID+'_ongoing.json'
         with open(path, mode='r') as f:
             user = json.load(f)
-        text = f"""Restaurant's Name = *{user.get('rstrnt_choice')}*\nDate of Booking = *{user.get('date_of_booking')}*\nTime of arrival = *{user.get('eta')}*\nReservation is for *{user.get('ppl_count')}*\nYour Details are:\n{user.get('full_name_and_enter_phn_number')[0]}\n{user.get('full_name_and_enter_phn_number')[1]}\n\nWould you like to continue with your reservation?\n\nPlease reply with Yes or No"""
+        text = f"""Restaurant's Name = *{user.get('rstrnt_choice')}*\nDate of Booking = *{user.get('date_of_booking')}*\nTime of arrival = *{user.get('eta')}*\nReservation is for *{user.get('ppl_count')}*\nYour Details are:\n*{user.get('full_name_and_enter_phn_number')[0]}\n{user.get('full_name_and_enter_phn_number')[1]}*\n\nWould you like to continue with your reservation?\n\nPlease reply with Yes or No"""
         if string:
             text = string + text
         return self.send_message(chatID, text)
@@ -83,6 +83,8 @@ class Bot():
                         with open(path, mode='r+') as f:
                             state_dict = json.load(f)
                         state = state_dict.get('state')
+
+                        # CANCEL command logic
                         if text.lower() == 'cancel':
                             os.remove(path)
                             return self.send_goodbye(id)
@@ -146,12 +148,15 @@ class Bot():
                             try:
                                 text = text.split('\n')
                                 int(text[1])
+                                regex = re.compile(r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
+                                if not re.match(regex, text[1]):
+                                    raise ValueError
                             except ValueError:
-                                err_msg = 'Entered phone number was not valid, Please enter Your Full Name and Valid Phone number in the given format.\n\n' + \
+                                err_msg = 'Entered phone number was not valid\n\n' + \
                                     question_dict[keys[index_of_key]]
                                 return self.send_message(id, err_msg)
                             except:
-                                err_msg = 'Please enter your Full Name Valid Phone number in the given format.\n\n' + \
+                                err_msg = 'Entered information was not in valid format\n\n' + \
                                     question_dict[keys[index_of_key]]
                                 return self.send_message(id, err_msg)
 
